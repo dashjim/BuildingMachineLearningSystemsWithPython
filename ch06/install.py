@@ -169,42 +169,46 @@ def download_tweets(fetch_list, raw_dir):
                       wait_seconds)
                 time.sleep(wait_seconds+5)
 
+            with open(raw_dir + item[2] + '.json', "wt") as f:
+                f.write(json.dumps(dict(response)) + "\n")
+                
         except twitter.TwitterError as e:
             fatal = True
             print(e)
-            for m in json.loads(e.response_data.decode())['errors']:
-                if m['code'] == 34:
-                    print("Tweet missing: ", item)
-                    with open(MISSING_ID_FILE, "at") as f:
-                        f.write(item[2] + "\n")
-
-                    fatal = False
-                    break
-                elif m['code'] == 63:
-                    print("User of tweet '%s' has been suspended." % item)
-                    with open(MISSING_ID_FILE, "at") as f:
-                        f.write(item[2] + "\n")
-
-                    fatal = False
-                    break
-                elif m['code'] == 88:
-                    print("Rate limit exceeded.")
-                    fatal = True
-                    break
-                elif m['code'] == 179:
-                    print("Not authorized to view this tweet.")
-                    with open(NOT_AUTHORIZED_ID_FILE, "at") as f:
-                        f.write(item[2] + "\n")
-                    fatal = False
-                    break
-
-            if fatal:
-                raise
-            else:
-                continue
-
-        with open(raw_dir + item[2] + '.json', "wt") as f:
-            f.write(json.dumps(dict(response)) + "\n")
+            try:
+                for m in json.loads(e.response_data.decode())['errors']:
+                    if m['code'] == 34:
+                        print("Tweet missing: ", item)
+                        with open(MISSING_ID_FILE, "at") as f:
+                            f.write(item[2] + "\n")
+    
+                        fatal = False
+                        break
+                    elif m['code'] == 63:
+                        print("User of tweet '%s' has been suspended." % item)
+                        with open(MISSING_ID_FILE, "at") as f:
+                            f.write(item[2] + "\n")
+    
+                        fatal = False
+                        break
+                    elif m['code'] == 88:
+                        print("Rate limit exceeded.")
+                        fatal = True
+                        break
+                    elif m['code'] == 179:
+                        print("Not authorized to view this tweet.")
+                        with open(NOT_AUTHORIZED_ID_FILE, "at") as f:
+                            f.write(item[2] + "\n")
+                        fatal = False
+                        break
+    
+                if fatal:
+                    raise
+                else:
+                    continue
+            except AttributeError as e:
+                print(e)
+                
 
     return
 
@@ -291,7 +295,7 @@ def main():
     fetch_list = purge_already_fetched(total_list, user_params['rawDir'])
     print("Fetching %i tweets..." % len(fetch_list))
 
-    if fetch_list:
+    if 0==1:
         # start fetching data from twitter
         download_tweets(fetch_list, user_params['rawDir'])
 
