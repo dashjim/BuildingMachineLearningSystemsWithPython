@@ -28,10 +28,10 @@ if not os.path.exists(CHART_DIR):
 def tweak_labels(Y, pos_sent_list):
     pos = Y == pos_sent_list[0]
     for sent_label in pos_sent_list[1:]:
-        pos |= Y == sent_label
+        pos |= Y == sent_label # Anything in the pos_sent_list is take as positive
 
-    Y = np.zeros(Y.shape[0])
-    Y[pos] = 1
+    Y = np.zeros(Y.shape[0]) # make it all zero FIRST
+    Y[pos] = 1               # Than make positive to be 1, so now none positive will be 0.
     Y = Y.astype(int)
 
     return Y
@@ -56,6 +56,7 @@ def load_sanders_data(dirname=".", line_count=-1):
             tweet_fn = os.path.join(
                 DATA_DIR, dirname, 'rawdata', '%s.json' % tweet_id)
             try:
+                print(tweet_fn)
                 tweet = json.load(open(tweet_fn, "r"))
             except IOError:
                 print(("Tweet '%s' not found. Skip." % tweet_fn))
