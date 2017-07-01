@@ -1,2 +1,9 @@
 *.pyc
 ch06/twitterauth.py
+.idea/
+ch03/data/dataset-379-20news-18828_EYKCY.zip
+ch03/data/379/raw/alt.atheism/100-53167
+ch03/data/379/raw/
+ch03/data/379/
+ch03/charts/
+playGround/user-basket/data/raw_user.csv

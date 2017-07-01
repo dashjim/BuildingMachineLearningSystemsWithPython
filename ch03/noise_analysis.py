@@ -40,6 +40,7 @@ all = [(len(post[0]), post[0], train_data.target_names[post[1]])
        for post in post_group]
 graphics = sorted([post for post in all if post[2] == 'comp.graphics'])
 print(graphics[5])
+
 # (245, 'From: SITUNAYA@IBM3090.BHAM.AC.UK\nSubject: test....(sorry)\nOrganization:
 # The University of Birmingham, United Kingdom\nLines: 1\nNNTP-Posting-Host: ibm3090.bham.ac.uk
 # \n\n==============================================================================\n',

@@ -1,3 +1,4 @@
+# coding=utf-8
 # This code is supporting material for the book
 # Building Machine Learning Systems with Python
 # by Willi Richert and Luis Pedro Coelho
@@ -26,6 +27,7 @@ num_clusters = 3
 def plot_clustering(x, y, title, mx=None, ymax=None, xmin=None, km=None):
     pylab.figure(num=None, figsize=(8, 6))
     if km:
+        # x,y 是数组，zip后变成一个元组的数列
         pylab.scatter(x, y, s=50, c=km.predict(list(zip(x, y))))
     else:
         pylab.scatter(x, y, s=50)
@@ -41,7 +43,8 @@ def plot_clustering(x, y, title, mx=None, ymax=None, xmin=None, km=None):
 
     return pylab
 
-
+# http://www.wolframalpha.com/input/?i=exp(-x**2%2F2)%2Fsqrt(2*pi)
+# 正态分布的随机数，一共20个。loc是分布的中心点
 xw1 = norm(loc=0.3, scale=.15).rvs(20)
 yw1 = norm(loc=0.3, scale=.15).rvs(20)
 
