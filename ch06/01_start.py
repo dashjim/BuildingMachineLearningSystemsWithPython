@@ -91,8 +91,13 @@ def train_model(clf_factory, X, Y, name="NB ngram", plot=False):
         fpr, tpr, roc_thresholds = roc_curve(y_test, proba[:, 1])
         precision, recall, pr_thresholds = precision_recall_curve(
             y_test, proba[:, 1])
+        
+        plot_result = np.c_[proba, X_test, y_test]
 
-        pr_scores.append(auc(recall, precision)) # auc is between 0.5 - 1, 0.5 is very bad, 1 is the preface.
+        print("result for - {0}".format(name))
+        print(plot_result[:20])
+
+        pr_scores.append(auc(recall, precision)) # auc is between 0.5 - 1, 0.5 is the worst, 1 is the prefact.
         precisions.append(precision)
         recalls.append(recall)
         thresholds.append(pr_thresholds)
@@ -131,7 +136,7 @@ if __name__ == "__main__":
     print("== Pos vs. neg ==")
     # return an array contains True if it is of class positive OR negative
     pos_neg = np.logical_or(Y_orig == "positive", Y_orig == "negative")
-    # Filter only positive and negative ones.
+    # Filter to left only positive and negative ones.
     X = X_orig[pos_neg]
     Y = Y_orig[pos_neg]
     Y = tweak_labels(Y, ["positive"]) # array contains 0 or 1, 1 means positive and 0 means negative.

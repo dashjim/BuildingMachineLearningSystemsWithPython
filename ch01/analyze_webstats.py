@@ -43,8 +43,8 @@ def plot_models(x, y, models, fname, mx=None, ymax=None, xmin=None):
         if mx is None:
             mx = sp.linspace(0, x[-1], 1000)
         for model, style, color in zip(models, linestyles, colors):
-            # print "Model:",model
-            # print "Coeffs:",model.coeffs
+            print "Model:",model
+            print "Coeffs:",model.coeffs
             plt.plot(mx, model(mx), linestyle=style, linewidth=2, c=color)
 
         plt.legend(["d=%i" % m.order for m in models], loc="upper left")
@@ -65,6 +65,7 @@ plot_models(x, y, None, os.path.join(CHART_DIR, "1400_01_01.png"))
 fp1, res1, rank1, sv1, rcond1 = sp.polyfit(x, y, 1, full=True)
 print("Model parameters of fp1: %s" % fp1)
 print("Error of the model of fp1:", res1)
+# poly1d（）是把系数变成函数
 f1 = sp.poly1d(fp1)
 
 fp2, res2, rank2, sv2, rcond2 = sp.polyfit(x, y, 2, full=True)
@@ -134,6 +135,8 @@ plot_models(
 # separating training from testing data
 frac = 0.3
 split_idx = int(frac * len(xb))
+# 先把所有X值打乱顺序，切出来30%，再对两部分分别排序，
+# 得到的数字作为x的下标。（因为X小时数本来就是从一开始连续的自然数）
 shuffled = sp.random.permutation(list(range(len(xb))))
 test = sorted(shuffled[:split_idx])
 train = sorted(shuffled[split_idx:])
