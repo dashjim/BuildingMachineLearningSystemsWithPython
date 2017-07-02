@@ -1,6 +1,8 @@
-Building Machine Learning Systems with Python
+针对第二版加入中文注释 - Building Machine Learning Systems with Python
 =============================================
 
+同时保持更新、合并源头的代码。
+=============================================
 Source Code for the book Building Machine Learning Systems with Python by [Luis
 Pedro Coelho](http://luispedro.org) and [Willi Richert](http://twotoreal.com).
 
