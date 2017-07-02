@@ -66,6 +66,7 @@ from sklearn.cluster import KMeans
 # make it verbose will print some information -jim
 km = KMeans(n_clusters=num_clusters, n_init=1, verbose=1, random_state=3)
 # 传给模型的是一个二维数组，一共有3529行，每一行代表一个post，每一行的宽度是4712，其中的数字是TF-IDF的得分
+# 在平面上，k means是计算两个点之间的距离，并移动中心点。这里的每一行（4712个数字）相当于一个“点”
 clustered = km.fit(vectorized)
 
 # 模型结果的解读...
