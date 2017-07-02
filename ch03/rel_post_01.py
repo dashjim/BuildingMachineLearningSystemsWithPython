@@ -1,3 +1,4 @@
+# coding=utf-8
 # This code is supporting material for the book
 # Building Machine Learning Systems with Python
 # by Willi Richert and Luis Pedro Coelho
@@ -51,25 +52,26 @@ num_samples, num_features = X_train.shape
 print("#samples: %d, #features: %d" % (num_samples, num_features))
 
 new_post_vec = vectorizer.transform([new_post])
-print(new_post_vec, type(new_post_vec))
+print(new_post_vec, type(new_post_vec)) # 稀疏表示
 print(new_post_vec.toarray())
 print(vectorizer.get_feature_names())
 
-
+# 不能处理重复的句子
 def dist_raw(v1, v2):
     delta = v1 - v2
     return sp.linalg.norm(delta.toarray())
 
-
+# 处理重复的句子 (什么鬼？两种方法结果一样？)
 def dist_norm(v1, v2):
     v1_normalized = v1 / sp.linalg.norm(v1.toarray())
     v2_normalized = v2 / sp.linalg.norm(v2.toarray())
 
     delta = v1_normalized - v2_normalized
-
+    # norm()向量的长度
     return sp.linalg.norm(delta.toarray())
 
 dist = dist_norm
+# dist = dist_raw (什么鬼？两种方法结果一样？)
 
 best_dist = sys.maxsize
 best_i = None

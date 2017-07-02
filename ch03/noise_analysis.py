@@ -1,3 +1,4 @@
+# coding=utf-8
 # This code is supporting material for the book
 # Building Machine Learning Systems with Python
 # by Willi Richert and Luis Pedro Coelho
@@ -26,17 +27,18 @@ class StemmedTfidfVectorizer(TfidfVectorizer):
 
     def build_analyzer(self):
         analyzer = super(TfidfVectorizer, self).build_analyzer()
+        # 下面代码似乎有问题？应该先Stem，再analyze
         return lambda doc: (english_stemmer.stem(w) for w in analyzer(doc))
 
 vectorizer = StemmedTfidfVectorizer(min_df=10, max_df=0.5,
                                     stop_words='english', decode_error='ignore'
                                     )
-vectorized = vectorizer.fit_transform(train_data.data)
+vectorized = vectorizer.fit_transform(train_data.data) # TF-IDF 数字
 
 post_group = zip(train_data.data, train_data.target)
 # Create a list of tuples that can be sorted by
 # the length of the posts
-all = [(len(post[0]), post[0], train_data.target_names[post[1]])
+all = [(len(post[0]), post[0], train_data.target_names[post[1]]) # post[1] 是数字，转换成名字
        for post in post_group]
 graphics = sorted([post for post in all if post[2] == 'comp.graphics'])
 print(graphics[5])
@@ -46,13 +48,13 @@ print(graphics[5])
 # \n\n==============================================================================\n',
 # 'comp.graphics')
 
-noise_post = graphics[5][1]
+noise_post = graphics[5][1] # get the content -Jim
 
-analyzer = vectorizer.build_analyzer()
+analyzer = vectorizer.build_analyzer() # 第二个analyzer，确保还有stem功能？
 print(list(analyzer(noise_post)))
-
+# vectorizer.get_feature_names 返回全部4千多个词
 useful = set(analyzer(noise_post)).intersection(vectorizer.get_feature_names())
-print(sorted(useful))
+print(sorted(useful)) # 去掉了近一般的词
 # ['ac', 'birmingham', 'host', 'kingdom', 'nntp', 'sorri', 'test', 'uk', 'unit', 'univers']
 
 for term in sorted(useful):

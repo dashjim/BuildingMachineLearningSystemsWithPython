@@ -1,3 +1,4 @@
+# coding=utf-8
 # This code is supporting material for the book
 # Building Machine Learning Systems with Python
 # by Willi Richert and Luis Pedro Coelho
@@ -56,15 +57,18 @@ vectorizer = StemmedTfidfVectorizer(min_df=10, max_df=0.5,
                                     )
 
 vectorized = vectorizer.fit_transform(train_data.data)
+# shape 是一个tuple
 num_samples, num_features = vectorized.shape
 print("#samples: %d, #features: %d" % (num_samples, num_features))
 # samples: 3529, #features: 4712
 
 from sklearn.cluster import KMeans
-
+# make it verbose will print some information -jim
 km = KMeans(n_clusters=num_clusters, n_init=1, verbose=1, random_state=3)
+# 传给模型的是一个二维数组，一共有3529行，每一行代表一个post，每一行的宽度是4712，其中的数字是TF-IDF的得分
 clustered = km.fit(vectorized)
 
+# 模型结果的解读...
 print("km.labels_=%s" % km.labels_)
 # km.labels_=[ 6 34 22 ...,  2 21 26]
 
