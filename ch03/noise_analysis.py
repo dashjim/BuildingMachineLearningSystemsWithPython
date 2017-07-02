@@ -52,9 +52,10 @@ noise_post = graphics[5][1] # get the content -Jim
 
 analyzer = vectorizer.build_analyzer() # 第二个analyzer，确保还有stem功能？
 print(list(analyzer(noise_post)))
-# vectorizer.get_feature_names 返回全部4千多个词
+# vectorizer.get_feature_names 返回全部TF-IDF的4千多个词
+# 注意有min_df, max_df这时已经去除了不少词。
 useful = set(analyzer(noise_post)).intersection(vectorizer.get_feature_names())
-print(sorted(useful)) # 去掉了近一般的词
+print(sorted(useful)) # 去掉了近一半的词
 # ['ac', 'birmingham', 'host', 'kingdom', 'nntp', 'sorri', 'test', 'uk', 'unit', 'univers']
 
 for term in sorted(useful):
