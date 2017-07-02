@@ -1,3 +1,4 @@
+# coding=utf-8
 # This code is supporting material for the book
 # Building Machine Learning Systems with Python
 # by Willi Richert and Luis Pedro Coelho
@@ -24,6 +25,7 @@ x = data[:, 0]
 y = data[:, 1]
 print("Number of invalid entries:", sp.sum(sp.isnan(y)))
 x = x[~sp.isnan(y)]
+
 y = y[~sp.isnan(y)]
 
 
@@ -135,10 +137,12 @@ plot_models(
 # separating training from testing data
 frac = 0.3
 split_idx = int(frac * len(xb))
-# 先把所有X值打乱顺序，切出来30%，再对两部分分别排序，
+
+# 针对快速增长的最后一部分（141个）
+# 先把所有X值打乱顺序，切出来30%（44个），再对两部分分别排序，
 # 得到的数字作为x的下标。（因为X小时数本来就是从一开始连续的自然数）
 shuffled = sp.random.permutation(list(range(len(xb))))
-test = sorted(shuffled[:split_idx])
+test = sorted(shuffled[:split_idx]) # 44个
 train = sorted(shuffled[split_idx:])
 fbt1 = sp.poly1d(sp.polyfit(xb[train], yb[train], 1))
 fbt2 = sp.poly1d(sp.polyfit(xb[train], yb[train], 2))
@@ -161,5 +165,7 @@ plot_models(
 from scipy.optimize import fsolve
 print(fbt2)
 print(fbt2 - 100000)
+
+# 解方程
 reached_max = fsolve(fbt2 - 100000, x0=800) / (7 * 24)
 print("100,000 hits/hour expected at week %f" % reached_max[0])
