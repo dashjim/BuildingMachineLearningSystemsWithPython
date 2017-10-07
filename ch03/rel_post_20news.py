@@ -76,6 +76,8 @@ print("km.labels_=%s" % km.labels_)
 print("km.labels_.shape=%s" % km.labels_.shape)
 # km.labels_.shape=3529
 
+# 第二版本的内容
+
 from sklearn import metrics
 print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels, km.labels_))
 # Homogeneity: 0.400
