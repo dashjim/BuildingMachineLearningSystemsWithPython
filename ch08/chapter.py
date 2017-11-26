@@ -1,3 +1,4 @@
+# coding=utf-8
 import numpy as np # NOT IN BOOK
 from matplotlib import pyplot as plt # NOT IN BOOK
 
@@ -5,24 +6,30 @@ def load():
     import numpy as np
     from scipy import sparse
 
-    data = np.loadtxt('data/ml-100k/u.data')
-    ij = data[:, :2]
-    ij -= 1  # original data is in 1-based system
-    values = data[:, 2]
+    data = np.loadtxt('data/ml-100k/u.data') # user id | item id | rating | timestamp
+    ij = data[:, :2]        #ij.shape is (100000, 2)
+    ij -= 1                 # original data is in 1-based system
+    values = data[:, 2]         # array([ 3.,  3.,  1., ...,  1.,  2.,  3.])
     reviews = sparse.csc_matrix((values, ij.T)).astype(float)
-    return reviews.toarray()
+    return reviews.toarray() # reviews shape is 943 X 1682, 每一行表示一个用户
+                             # 943 is the number of users who gave rating to 
+                             # total 1682 movies
 reviews = load()
-U,M = np.where(reviews)
+U,M = np.where(reviews)     # where() is used to get the index of that 2D matrix
+                            # M, U.shape is (100000, )
 import random
-test_idxs = np.array(random.sample(range(len(U)), len(U)//10))
+test_idxs = np.array(random.sample(range(len(U)), len(U)//10)) # get 1/10 
 
 train = reviews.copy()
-train[U[test_idxs], M[test_idxs]] = 0
+train[U[test_idxs], M[test_idxs]] = 0 
 
 test = np.zeros_like(reviews)
 test[U[test_idxs], M[test_idxs]] = reviews[U[test_idxs], M[test_idxs]]
 
 class NormalizePositive(object):
+    """
+    为了消除用户自身给大分数或者小分数的倾向。比如有的用户都会给到4左右，有的给到3左右.
+    """
     def __init__(self, axis=0):
         self.axis = axis
 
@@ -32,15 +39,17 @@ class NormalizePositive(object):
           #  count features that are greater than zero in axis 0:
         binary = (features > 0)
 
-        count0 = binary.sum(axis=0)
+        count0 = binary.sum(axis=0) # count0 is of shape (943,)
 
          # to avoid division by zero, set zero counts to one:
         count0[count0 == 0] = 1.
 
-         # computing the mean is easy:
+         # 用户给的总分处以用户给的分的次数 = 平均分
         self.mean = features.sum(axis=0)/count0
 
         # only consider differences where binary is True:
+        # (1682,943) - (0,943) 列数相同，等于第一个数组减去第二个数组中相应的数字
+        # 每一个电影评分都减去该用户给的平均分
         diff = (features - self.mean) * binary
         diff **= 2
         # regularize the estimate of std by adding 0.1
@@ -60,6 +69,11 @@ class NormalizePositive(object):
         return features
 
     def inverse_transform(self, features, copy=True):
+        """
+        Notice how we took care of transposing the input matrix when the axis is 1
+        and then transformed it back so that the return value has the same shape 
+        as the input. The inverse_transform method performs the inverse operation to transform 
+        """
         if copy:
             features = features.copy()
         if self.axis == 1:
@@ -81,11 +95,15 @@ train = norm.fit_transform(train)
 plt.imshow(binary[:200, :200], interpolation='nearest')
 
 from scipy.spatial import distance
-# compute all pair-wise distances:
+# compute all pair-wise distances: 
+# https://zh.wikipedia.org/wiki/%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB
+# https://zhuanlan.zhihu.com/p/21341296 数字越小越相关
+# binary表示有没有过评分，也就是说有过评分的就相近？
 dists = distance.pdist(binary, 'correlation')
 # Convert to square form, so that dists[i,j]
 # is distance between binary[i] and binary[j]:
-dists = distance.squareform(dists)
+dists = distance.squareform(dists) # 943 *943
+# These are the users that most resemble it.最相似的用户
 neighbors = dists.argsort(axis=1)
 
 # We are going to fill this matrix with results
@@ -113,7 +131,7 @@ r2 = metrics.r2_score(test[test > 0], predicted[test > 0])
 print('R2 score (binary neighbors): {:.1%}'.format(r2))
 
 reviews = reviews.T
-# use same code as before 
+# use same code as before - R^2 (coefficient of determination) regression score function.
 r2 = metrics.r2_score(test[test > 0], predicted[test > 0])
 print('R2 score (binary movie neighbors): {:.1%}'.format(r2))
 
